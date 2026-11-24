@@ -41,7 +41,7 @@ def test_create_read_and_replay(isolated_db):
 
 def test_health_reports_release(isolated_db):
     response = create_app().test_client().get("/health")
-    assert response.status_code == 200
+    assert response.status_code == 202
     assert response.json == {"status": "ok", "version": release.VERSION}
 
 
