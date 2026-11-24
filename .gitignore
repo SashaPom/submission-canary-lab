@@ -3,5 +3,5 @@ __pycache__/
 .pytest_cache/
 .env
 *.sqlite*
-local-artifacts/
+local-artifacts
 results/

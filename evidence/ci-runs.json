@@ -1,0 +1,24 @@
+[
+  {
+    "headBranch": "v1.0.0-ci",
+    "headSha": "6f9c14891775a8be305a44f2e48273d31d6b66ca",
+    "conclusion": "success",
+    "url": "https://github.com/SashaPom/submission-canary-lab/actions/runs/45445741701",
+    "image_id": "sha256:04a1446956281d153baa95c936f6cbc0e4f935f0dbefb0a0416654cf2a279e98",
+    "archive_sha256": "4ce7d0aca6a111a6c24a6fb9034545ee9f057e49f91443c681f52ab322ef40f1"
+  },
+  {
+    "headBranch": "v2.0.0",
+    "headSha": "71d5b9222036624752dc804be119b61d5798d062",
+    "conclusion": "success",
+    "url": "https://github.com/SashaPom/submission-canary-lab/actions/runs/45445568578",
+    "image_id": "sha256:0a0cd421fa1e52610ec572e72a13c5539b84076807b8793f40694dd290c63f74",
+    "archive_sha256": "2409eccaa7b07505a3b87218f719771fe467fc40b0b95d5f3dbff4a1101ce471"
+  },
+  {
+    "headBranch": "experiment/test-gate",
+    "headSha": "52f58d3272987d0145d6b0f3936a1fa87e8691ef",
+    "conclusion": "failure",
+    "url": "https://github.com/SashaPom/submission-canary-lab/actions/runs/45445575772"
+  }
+]

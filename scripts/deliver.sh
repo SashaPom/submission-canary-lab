@@ -4,9 +4,14 @@ set -euo pipefail
 artifact=$1
 environment=$2
 root="$(cd -- "$(dirname -- "$0")/.." && pwd)"
-release="$(cat "$artifact/release.txt")"
-case "$release" in v1.0.0|v2.0.0) ;; *) printf 'Unknown release %s\n' "$release" >&2; exit 2;; esac
+archive_tag="$(cat "$artifact/release.txt")"
+case "$archive_tag" in
+    v1.0.0|v1.0.0-ci) release=v1.0.0;;
+    v2.0.0) release=v2.0.0;;
+    *) printf 'Unknown release %s\n' "$archive_tag" >&2; exit 2;;
+esac
 image="submission-lab:$release"
+archive_image="submission-lab:$archive_tag"
 
 python3 - "$artifact" <<'PY'
 import hashlib
@@ -22,12 +27,13 @@ if actual != expected:
 print(f"SHA-256 OK {actual}")
 PY
 docker load -i "$artifact/image.tar.gz"
-id="$(docker image inspect --format '{{.Id}}' "$image")"
+id="$(docker image inspect --format '{{.Id}}' "$archive_image")"
 if [[ "$id" != "$(cat "$artifact/image-id.txt")" ]]; then
     printf 'Image ID mismatch for %s\n' "$image" >&2
     exit 1
 fi
-printf 'Image ID OK %s %s\n' "$release" "$id"
+if [[ "$archive_image" != "$image" ]]; then docker tag "$archive_image" "$image"; fi
+printf 'Image ID OK %s %s\n' "$archive_tag" "$id"
 
 opts=(--no-build --pull never --wait --wait-timeout 25 -d)
 case "$environment" in

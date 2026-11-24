@@ -9,8 +9,10 @@ Flask приймає JSON з полями group_code і submission_key. SE-01 є
     python -m pip install -r requirements-test.txt
     python lab.py test --timeout 45
 
-Публічний workflow release.yml запускається для Git-тегів v1.0.0 і v2.0.0 та контрольної гілки experiment/test-gate. У GitHub Actions завантаж архіви image-v1.0.0 і image-v2.0.0 у local-artifacts/v1 і local-artifacts/v2. Архіви мають image.sha256 та image-id.txt. Обидва проходять перевірку перед запуском. Образи зібрано для Linux ARM64. Для повторного запуску на іншій архітектурі потрібна підтримка ARM64 у Docker.
+Публічний workflow release.yml запускається для Git-тегів v*. Тег v1.0.0-ci вказує на той самий коміт, що й v1.0.0. Робочий випуск v2 зібрано з v2.0.0. Workflow також запускається для контрольної гілки experiment/test-gate. У GitHub Actions завантаж архіви image-v1.0.0-ci і image-v2.0.0 у local-artifacts/v1 і local-artifacts/v2. Архіви мають image.sha256 та image-id.txt. Обидва проходять перевірку перед запуском. Для v1 скрипт додає локальний псевдонім тега після перевірки ID. Образи зібрано для Linux ARM64. Для повторного запуску на іншій архітектурі потрібна підтримка ARM64 у Docker.
 
+    gh run download 45445741701 -R SashaPom/submission-canary-lab -n image-v1.0.0-ci -D local-artifacts/v1
+    gh run download 45445568578 -R SashaPom/submission-canary-lab -n image-v2.0.0 -D local-artifacts/v2
     bash scripts/deliver.sh local-artifacts/v1 staging
     python -m pytest -q --hosts="docker://$(docker compose -p submission-stage ps -q stage)" infra
     curl -sS -i -H 'Content-Type: application/json' \
@@ -50,7 +52,7 @@ Flask приймає JSON з полями group_code і submission_key. SE-01 є
 
 ## Метрики та журнали
 
-Запит Prometheus sum by (version, status) (submission_responses_total) показує кількість завершених POST. Prometheus доступний на 127.0.0.1:9090. Метрики накопичувальні до перезапуску процесу. Вимірюй їх до зупинки v2.
+Запит Prometheus sum by (version, status) (submission_responses_total) показує кількість завершених POST. Його результат зберігає python scripts/metrics.py --output results/canary-prometheus.json. Prometheus доступний на 127.0.0.1:9090. Метрики накопичувальні до перезапуску процесу. Вимірюй їх до зупинки v2.
 
     docker compose -p submission-work logs --no-log-prefix v1 v2 | awk '/^[{]/' > results/submissions.jsonl
     python lab.py summarize results/submissions.jsonl

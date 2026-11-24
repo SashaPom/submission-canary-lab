@@ -1,0 +1,45 @@
+[v1-staging]
+SHA-256 OK 4ce7d0aca6a111a6c24a6fb9034545ee9f057e49f91443c681f52ab322ef40f1
+Image ID OK v1.0.0-ci sha256:04a1446956281d153baa95c936f6cbc0e4f935f0dbefb0a0416654cf2a279e98
+
+[v1-infra]
+1 passed in 0.50s
+
+[v1-smoke]
+HTTP/1.1 201 CREATED
+{"id":1}
+
+[v2-staging]
+SHA-256 OK 2409eccaa7b07505a3b87218f719771fe467fc40b0b95d5f3dbff4a1101ce471
+Image ID OK v2.0.0 sha256:0a0cd421fa1e52610ec572e72a13c5539b84076807b8793f40694dd290c63f74
+
+[v2-infra]
+1 passed in 0.49s
+
+[v2-smoke]
+HTTP/1.1 201 CREATED
+{"id":2}
+
+[v2-working]
+SHA-256 OK 2409eccaa7b07505a3b87218f719771fe467fc40b0b95d5f3dbff4a1101ce471
+Image ID OK v2.0.0 sha256:0a0cd421fa1e52610ec572e72a13c5539b84076807b8793f40694dd290c63f74
+
+[work-mounts]
+/submission-work-v1-1 submission-work_working-data
+/submission-work-v2-1 submission-work_working-data
+
+[v2-health]
+HTTP/1.1 200 OK
+{"status":"ok","version":"v2"}
+
+[read-v1]
+HTTP/1.1 200 OK
+{"group_code":"SE-01","id":210,"submission_key":"run-2411-canary-010"}
+
+[replay-v1]
+HTTP/1.1 200 OK
+{"id":210}
+
+[sqlite-count]
+Rows for key: 1 / submission: 210
+Total submissions: 600
