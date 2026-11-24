@@ -43,3 +43,18 @@ def test_health_reports_release(isolated_db):
     response = create_app().test_client().get("/health")
     assert response.status_code == 200
     assert response.json == {"status": "ok", "version": release.VERSION}
+
+
+def test_confirmation_failure_keeps_committed_record(isolated_db, monkeypatch):
+    monkeypatch.setenv("FAIL_CONFIRMATION", "1")
+    client = create_app().test_client()
+    payload = {"group_code": "SE-07", "submission_key": "post-write-failure"}
+    failed = client.post("/submissions", json=payload)
+    number = failed.json["id"]
+    assert failed.status_code == 503
+    assert client.get("/health").status_code == 200
+    assert client.get(f"/submissions/{number}").json == {"id": number, **payload}
+    with sqlite3.connect(isolated_db) as db:
+        assert db.execute("SELECT id FROM submissions WHERE submission_key = ?", (payload["submission_key"],)).fetchall() == [(number,)]
+    repeated = client.post("/submissions", json=payload)
+    assert repeated.status_code == 200 and repeated.json["id"] == number
